@@ -11,7 +11,7 @@ module Aoc2019
         computer = Computer.new(raw_integers)
         computer.run
 
-        computer.state[0]
+        computer.memory[0]
       end
 
       private

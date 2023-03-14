@@ -7,7 +7,7 @@ RSpec.describe Computer do
 
       computer.run
 
-      expect(computer.state).to eq([3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50])
+      expect(computer.memory).to eq([3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50])
     end
 
     it "handles example 2" do
@@ -15,7 +15,7 @@ RSpec.describe Computer do
 
       computer.run
 
-      expect(computer.state).to eq([2, 0, 0, 0, 99])
+      expect(computer.memory).to eq([2, 0, 0, 0, 99])
     end
 
     it "handles example 3" do
@@ -23,7 +23,7 @@ RSpec.describe Computer do
 
       computer.run
 
-      expect(computer.state).to eq([2, 3, 0, 6, 99])
+      expect(computer.memory).to eq([2, 3, 0, 6, 99])
     end
 
     it "handles example 4" do
@@ -31,7 +31,7 @@ RSpec.describe Computer do
 
       computer.run
 
-      expect(computer.state).to eq([2, 4, 4, 5, 99, 9801])
+      expect(computer.memory).to eq([2, 4, 4, 5, 99, 9801])
     end
 
     it "handles example 5" do
@@ -39,7 +39,7 @@ RSpec.describe Computer do
 
       computer.run
 
-      expect(computer.state).to eq([30, 1, 1, 4, 2, 5, 6, 0, 99])
+      expect(computer.memory).to eq([30, 1, 1, 4, 2, 5, 6, 0, 99])
     end
   end
 end

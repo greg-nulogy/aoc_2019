@@ -1,17 +1,17 @@
 class Computer
-  attr_accessor :current_location, :state
+  attr_accessor :instruction_pointer, :memory
 
   def initialize(raw_integers)
-    @state = raw_integers
-    @current_location = 0
+    @memory = raw_integers
+    @instruction_pointer = 0
   end
 
   def run
     keep_running = true
     while keep_running do
       current_instruction = parse_instruction
-      keep_running = current_instruction.run(state)
-      @current_location += current_instruction.class.size if keep_running
+      keep_running = current_instruction.run(memory)
+      @instruction_pointer += current_instruction.class.size if keep_running
     end
   end
 
@@ -23,11 +23,11 @@ class Computer
       Multiplication.opcode => Multiplication,
       Exit.opcode => Exit
     }
-    instruction_class = registered_instructions[state[current_location]]
-    data_start_location = current_location + 1
-    data_end_location = current_location + instruction_class.size
-    instruction_data = state[data_start_location...data_end_location]
-    instruction_class.new(*instruction_data)
+    instruction_class = registered_instructions[memory[instruction_pointer]]
+    data_start_location = instruction_pointer + 1
+    data_end_location = instruction_pointer + instruction_class.size
+    instruction_parameters = memory[data_start_location...data_end_location]
+    instruction_class.new(*instruction_parameters)
   end
 
 end
@@ -41,14 +41,14 @@ class Addition
     4
   end
 
-  def initialize(input_location1, input_location2, output_location)
-    @input_location1 = input_location1
-    @input_location2 = input_location2
-    @output_location = output_location
+  def initialize(input_address1, input_address2, output_address)
+    @input_address1 = input_address1
+    @input_address2 = input_address2
+    @output_address = output_address
   end
 
   def run(state)
-    state[@output_location] = state[@input_location1] + state[@input_location2]
+    state[@output_address] = state[@input_address1] + state[@input_address2]
     true
   end
 end
@@ -62,14 +62,14 @@ class Multiplication
     4
   end
 
-  def initialize(input_location1, input_location2, output_location)
-    @input_location1 = input_location1
-    @input_location2 = input_location2
-    @output_location = output_location
+  def initialize(input_address1, input_address2, output_address)
+    @input_address1 = input_address1
+    @input_address2 = input_address2
+    @output_address = output_address
   end
 
   def run(state)
-    state[@output_location] = state[@input_location1] * state[@input_location2]
+    state[@output_address] = state[@input_address1] * state[@input_address2]
     true
   end
 end

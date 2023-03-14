@@ -1,8 +1,8 @@
 class Computer
   attr_accessor :current_location, :state
 
-  def initialize(raw_instructions)
-    @state = raw_instructions.split(',').map(&:to_i)
+  def initialize(raw_integers)
+    @state = raw_integers
     @current_location = 0
   end
 

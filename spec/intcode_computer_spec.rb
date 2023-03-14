@@ -3,7 +3,7 @@ require "aoc_2019/intcode_computer"
 RSpec.describe Computer do
   describe "day 2 part 1" do
     it "handles example 1" do
-      computer = Computer.new("1,9,10,3,2,3,11,0,99,30,40,50")
+      computer = Computer.new([1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50])
 
       computer.run
 
@@ -11,7 +11,7 @@ RSpec.describe Computer do
     end
 
     it "handles example 2" do
-      computer = Computer.new("1,0,0,0,99")
+      computer = Computer.new([1, 0, 0, 0, 99])
 
       computer.run
 
@@ -19,7 +19,7 @@ RSpec.describe Computer do
     end
 
     it "handles example 3" do
-      computer = Computer.new("2,3,0,3,99")
+      computer = Computer.new([2, 3, 0, 3, 99])
 
       computer.run
 
@@ -27,7 +27,7 @@ RSpec.describe Computer do
     end
 
     it "handles example 4" do
-      computer = Computer.new("2,4,4,5,99,0")
+      computer = Computer.new([2, 4, 4, 5, 99, 0])
 
       computer.run
 
@@ -35,7 +35,7 @@ RSpec.describe Computer do
     end
 
     it "handles example 5" do
-      computer = Computer.new("1,1,1,4,99,5,6,0,99")
+      computer = Computer.new([1, 1, 1, 4, 99, 5, 6, 0, 99])
 
       computer.run
 

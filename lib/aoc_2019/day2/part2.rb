@@ -8,10 +8,8 @@ module Aoc2019
       def run(input)
         raw_integers = convert_input(input)
 
-        noun, verb = (0..99).to_a.product((0..99).to_a).find do |noun, verb|
-          copy_of_state = raw_integers.map(&:clone)
-          copy_of_state[1] = noun
-          copy_of_state[2] = verb
+        noun, verb = find_correct_noun_verb_pair do |noun, verb|
+          copy_of_state = prepare_state(raw_integers, noun, verb)
 
           computer = Computer.new(copy_of_state)
           computer.run
@@ -23,6 +21,17 @@ module Aoc2019
       end
 
       private
+
+      def find_correct_noun_verb_pair(&block)
+        (0..99).to_a.product((0..99).to_a).find(&block)
+      end
+
+      def prepare_state(raw_integers, noun, verb)
+        copy_of_state = raw_integers.map(&:clone)
+        copy_of_state[1] = noun
+        copy_of_state[2] = verb
+        copy_of_state
+      end
 
       def convert_input(input)
         input.split(',').map(&:to_i)
@@ -38,4 +47,7 @@ module Aoc2019
     puts answer
   end
 end
+
+
+
 

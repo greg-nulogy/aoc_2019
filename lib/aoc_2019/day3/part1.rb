@@ -6,23 +6,20 @@ module Aoc2019
   module Day3
     class Part1
       def run(input)
-        wires = parse_wires(input)
+        wire_paths = parse_wires(input)
 
-        wires_coordinates = Array.new(2) { Set.new }
+        wire_paths_coordinates = Array.new(2)
 
-        wires.each_with_index do |wire, index|
-          current_coordinate = Coordinate.new(0, 0)
-          wire.each do |instruction|
-            path_coordinates = handle_instruction(instruction, current_coordinate)
-            wires_coordinates[index].merge(path_coordinates)
-            current_coordinate = path_coordinates.last
+        wire_paths.each_with_index do |wire_path_segments, index|
+          wire_paths_coordinates[index] = wire_path_segments.reduce({
+            head: Coordinate.origin,
+            coordinates: Set.new
+          }) do |path_coordinate_data, segment_definition|
+            calculate_path_segment_coordinates(segment_definition, path_coordinate_data)
           end
         end
 
-        wire_cross_coordinates = wires_coordinates[0] & wires_coordinates[1]
-
-        closest_cross = wire_cross_coordinates.min { |a, b| a.manhatten_distance_from_origin <=> b.manhatten_distance_from_origin }
-        closest_cross.manhatten_distance_from_origin
+        calculate_distance_of_closest_cross(wire_paths_coordinates)
       end
 
       private
@@ -31,43 +28,46 @@ module Aoc2019
         input.lines.map { |wire| wire.split(",") }
       end
 
-      def handle_instruction(instruction, current_coordinate)
-        direction, magnitude = instruction.split(//, 2)
-        coordinates = []
+      def calculate_path_segment_coordinates(segment_definition, path_coordinate_data)
+        direction, magnitude = parse_segment_data(segment_definition)
 
-        case direction
-        when "U"
-          magnitude.to_i.times do
-            new_coordinate = current_coordinate.up
-            coordinates.push(new_coordinate)
-            current_coordinate = new_coordinate
-          end
-        when "D"
-          magnitude.to_i.times do
-            new_coordinate = current_coordinate.down
-            coordinates.push(new_coordinate)
-            current_coordinate = new_coordinate
-          end
-        when "L"
-          magnitude.to_i.times do
-            new_coordinate = current_coordinate.left
-            coordinates.push(new_coordinate)
-            current_coordinate = new_coordinate
-          end
-        when "R"
-          magnitude.to_i.times do
-            new_coordinate = current_coordinate.right
-            coordinates.push(new_coordinate)
-            current_coordinate = new_coordinate
-          end
+        head = path_coordinate_data[:head]
+        coordinates = []
+        magnitude.times do
+          head = head.public_send(direction)
+          coordinates.push(head)
         end
 
-        coordinates
+        {
+          head: head,
+          coordinates: path_coordinate_data[:coordinates].merge(coordinates)
+        }
       end
 
+      def parse_segment_data(segment_data)
+        raw_direction, raw_magnitude = segment_data.split(//, 2)
+
+        direction_mapping = {
+          "U" => :up,
+          "D" => :down,
+          "L" => :left,
+          "R" => :right
+        }
+        [direction_mapping[raw_direction], raw_magnitude.to_i]
+      end
+
+      def calculate_distance_of_closest_cross(wire_paths_coordinates)
+        wire_cross_coordinates = wire_paths_coordinates[0][:coordinates] & wire_paths_coordinates[1][:coordinates]
+        closest_cross = wire_cross_coordinates.min { |a, b| a.manhattan_distance_from_origin <=> b.manhattan_distance_from_origin }
+        closest_cross.manhattan_distance_from_origin
+      end
     end
 
     Coordinate = Struct.new(:x, :y) do
+      def self.origin
+        Coordinate.new(0, 0)
+      end
+
       def up
         Coordinate.new(x, y + 1)
       end
@@ -84,7 +84,7 @@ module Aoc2019
         Coordinate.new(x + 1, y)
       end
 
-      def manhatten_distance_from_origin
+      def manhattan_distance_from_origin
         x.abs + y.abs
       end
     end
